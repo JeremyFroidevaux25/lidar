@@ -1,21 +1,19 @@
-## Le but du script est de comparer la liste des fichiers laz préalbalement téléchargés avec la liste des laz nouvellement téléchargés sur IGN
-## On retire les duplicats pur ne pas télécharger une nouvelle fois les mêms tuiles
-##
+## Le but du script est de comparer la liste des fichiers laz préalbalement téléchargés 
+## avec la liste des laz nouvellement téléchargés sur IGN
+## On retire les duplicats pur ne pas télécharger une nouvelle fois les mêmes tuiles
 
-fpath <- "/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/las"
+library(data.table)
 
 # Get a list of all files in the folder
+fpath <- "/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/las"
 flist<- list.files(path = fpath, full.names = TRUE)
 write.csv(flist, "/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/flist_dwld.csv")
 
-
-library(data.table)
 #List of las files already downloaded
 flist<-fread("/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/flist_dwld.csv")
 
 #Complete list of last files to download but with duplicates (las already downloaded)
 dlist<-fread("/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/dlist_dwld.txt",header = F)
-
 
 #Function to remove the text before /
 remove_before_last_slash <- function(line) {
@@ -39,7 +37,6 @@ clist <- unique(alist)
 base_url <- "https://storage.sbg.cloud.ovh.net/v1/AUTH_63234f509d6048bca3c9fd7928720ca1/ppk-lidar/QK/"
 final_list <- paste0(base_url, clist)
 
-
 # Save the list
 writeLines(final_list, "/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/complete_list.txt")
 
@@ -48,20 +45,18 @@ writeLines(final_list, "/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/comple
 ## Le but du script ci-dessous est de comparer la liste des laz nouvellement téléchargés sur IGN et la liste des tif 
 ## On retire les fichiers de la liste laz à transformer qui sont déjà convertis pour ne pas perdre de temps dans la conversion
 
-
-fpath <- "/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/tif_chm"
+library(data.table)
 
 # Get a list of all files in the folder tif_chm
+fpath <- "/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/tif_chm"
 flist<- list.files(path = fpath, full.names = TRUE)
 write.csv(flist, "/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/tiff.csv")
 
-library(data.table)
 #List of tif files
 flist<-fread("/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/tiff.csv")
 
 #Complete list of last files withiut duplicates
 dlist<-fread("/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/complete_list.txt",header = F)
-
 
 #Function to remove the text before /
 remove_before_last_slash <- function(line) {
@@ -73,7 +68,6 @@ remove_before_last_slash <- function(line) {
   }
 }
 
-flist
 # Apply the function to list
 flist_name <- sapply(flist$V2, remove_before_last_slash)
 dlist_name <- sapply(dlist$V2, remove_before_last_slash)
@@ -88,22 +82,6 @@ flist_name1$flist_name
 dlist_name1$dlist_name
 filtered_dlist <- dlist[!dlist_name1$dlist_name %in% flist_name1$flist_name, drop = FALSE]
 print(filtered_dlist)
-
-library(dplyr)
-filtered_dlist <- sapply(filtered_dlist$V1, remove_before_last_slash)
-names(dlist_name1)[names(dlist_name1) == "dlist_name"] <- "name"
-names(flist_name1)[names(flist_name1) == "flist_name"] <- "name"
-
-flist_name1$name
-dlist_name1$name
-identical(dlist_name1, flist_name1)
-
-write.csv(flist_name1$name,"/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/flisteNAME.csv")
-write.csv(dlist_name1$name,"/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/dlisteNAME.csv")
-
-unique_names <- setdiff(dlist_name1$name, flist_name1$name)
-dlist_filtered <- dlist_name1[dlist_name1$name %in% unique_names, ]
-print(dlist_filtered)
 
 # Save the list
 write.csv(filtered_dlist, "/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/complete_list2.txt")
@@ -129,5 +107,20 @@ for (file_name in filtered_dlist$V1) {
 }
 warnings()
 
+## other useful bit of codes (if needed)
+library(dplyr)
+filtered_dlist <- sapply(filtered_dlist$V1, remove_before_last_slash)
+names(dlist_name1)[names(dlist_name1) == "dlist_name"] <- "name"
+names(flist_name1)[names(flist_name1) == "flist_name"] <- "name"
 
+flist_name1$name
+dlist_name1$name
+identical(dlist_name1, flist_name1)
+
+write.csv(flist_name1$name,"/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/flisteNAME.csv")
+write.csv(dlist_name1$name,"/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/dlisteNAME.csv")
+
+unique_names <- setdiff(dlist_name1$name, flist_name1$name)
+dlist_filtered <- dlist_name1[dlist_name1$name %in% unique_names, ]
+print(dlist_filtered)
 
