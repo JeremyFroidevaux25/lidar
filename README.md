@@ -1,4 +1,6 @@
-# lidar
+# Projet CREA HerbiLand
+#### https://creamontblanc.org/fr/herbiland-herbivores-landes-montagne/
+# Gestion et analyse des données LiDAR
 
 #### Il y a 4 scripts : 
 
