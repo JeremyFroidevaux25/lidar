@@ -1,6 +1,9 @@
+##------------------------------------------------------------------------------------------------------------------
+## Part 1
 ## Le but du script est de comparer la liste des fichiers laz préalbalement téléchargés 
 ## avec la liste des laz nouvellement téléchargés sur IGN
 ## On retire les duplicats pur ne pas télécharger une nouvelle fois les mêmes tuiles
+##------------------------------------------------------------------------------------------------------------------
 
 library(data.table)
 
@@ -40,10 +43,12 @@ final_list <- paste0(base_url, clist)
 # Save the list
 writeLines(final_list, "/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/complete_list.txt")
 
-
+##------------------------------------------------------------------------------------------------------------------
+## Part 2
 ## La conversion des laz en CHM_tiff peut être très longue et stopper brutalement (script lidar_extract). 
 ## Le but du script ci-dessous est de comparer la liste des laz nouvellement téléchargés sur IGN et la liste des tif 
 ## On retire les fichiers de la liste laz à transformer qui sont déjà convertis pour ne pas perdre de temps dans la conversion
+##------------------------------------------------------------------------------------------------------------------
 
 library(data.table)
 
