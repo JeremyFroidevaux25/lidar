@@ -7,6 +7,7 @@
 
 library(terra)
 library(sf)
+library(data.table)
 
 # Load the point shapefile (coordinates of the sites monitored in the Mont-Blanc)
 veg<- st_read("/Users/jeremyfroidevaux/Documents/Herbiland/GIS/Landus_placette_veg/placetteveg_locL93.shp")
