@@ -1,21 +1,19 @@
 
-## Données
-## 
-## Il faut aller sur https://geoservices.ign.fr/lidarhd
-## et zoomer sur la carte pour obtenir le(s) fichier(s) `laz` d'intérêt.
-##
+##------------------------------------------------------------------------------------------------------------------
+## Extract and convert laz files to tiff to obtain a canopy height model
+## https://geoservices.ign.fr/lidarhd
+##------------------------------------------------------------------------------------------------------------------
+
 
 ## Package
 ## https://r-lidar.github.io/lidRbook/
 library(lidR)
-######################
-## DSM ###############
-######################
-## Lecture du nuage de points X,Y,Z (DSM)
-library(lidR)
 library(pryr)
 library(terra)
 
+# Lecture du nuage de points X,Y,Z (DSM) et conversion en batch
+
+#
 path <- "/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/dwld"
 las_files <- list.files(path, pattern = "\\.laz$", full.names = TRUE)
 
@@ -44,12 +42,12 @@ for (file in las_files) {
 gc()
 
 
-#################
-##End of code 
-#################
+##############################################################################################
+## Alternative codes from Vincent Miele
 
+#Option1
+#-----------
 
-#Code Vincent
 las <- readLAS("/Users/jeremyfroidevaux/Documents/Herbiland/Lidar/new/LHD_FXX_1006_6551_PTS_C_LAMB93_IGN69.copc.laz")
 str(las)
 
@@ -58,10 +56,7 @@ str(las)
 lasraster <- pixel_metrics(las, mean(Z), res=1) # sous forme de raster
 plot_dtm3d(lasraster, bg = "white")
 
-
-######################
-## DTM ###############
-######################
+#DTM
 ## Calcul du X,Y,Z du sol (DTM)
 ## C'est un calcul, pas forcément juste
 ## si la canopée est trop dense (le sol est invisible)
@@ -69,9 +64,7 @@ dtmraster <- rasterize_terrain(las, res = 1, algorithm = tin())
 plot_dtm3d(dtmraster, bg = "white")
 
 
-######################
-## CHM ###############
-######################
+#CHM
 ## Calcul du X,Y,Z de la canopée (CHM)
 ## comme la différence entre le DSM et le DTM
 ## Option1 : directement sur les points
@@ -81,7 +74,10 @@ chmraster <- rasterize_canopy(nlas, res = 1, algorithm = p2r())
 col <- height.colors(25)
 plot(chmraster, col = col)
 
-## Option2 : on le fait sur les rasters?
+#Option1
+#-----------
+
+#on le fait sur les rasters?
 ## mais ça ne marche pas, nombreuses valeurs négatives  !!
 #chmraster = lasraster - dtmraster
 
